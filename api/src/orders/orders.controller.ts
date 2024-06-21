@@ -54,4 +54,9 @@ export class OrdersController {
   async cancelOrder(@Param('id') id: string) {
     return this.ordersService.cancelOrder(id);
   }
+
+  @Delete('/:id')
+  async deleteOrder(@Param('id') id: string) {
+    return this.ordersService.deleteOrder(id);
+  }
 }

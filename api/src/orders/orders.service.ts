@@ -116,4 +116,16 @@ export class OrdersService {
       return { message: 'Pedido cancelado com sucesso' };
     }
   }
+
+  async deleteOrder(id: string): Promise<void> {
+    const order = await this.findOrderById(id);
+
+    if (order.status != OrderStatus.CANCELED) {
+      throw new MethodNotAllowedException(
+        'Você não pode excluir um pedido que não foi cancelado',
+      );
+    }
+
+    await this.orderModel.findByIdAndDelete(id);
+  }
 }
