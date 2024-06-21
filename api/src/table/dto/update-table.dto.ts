@@ -1,4 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTableDto } from './create-table.dto';
+import { IOrder } from 'src/orders/interfaces/order.interface';
 
-export class UpdateTableDto extends PartialType(CreateTableDto) {}
+export class UpdateTableDto {
+  orders: IOrder[];
+}

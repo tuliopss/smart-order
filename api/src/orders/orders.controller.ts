@@ -10,14 +10,21 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderToUpdateTableDTO } from './dto/order-to-update-table.dto';
 
 @Controller('/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  create(
+    @Body() createOrderDto: CreateOrderDto,
+    @Body() orderToUpdateTableDTO: OrderToUpdateTableDTO,
+  ) {
+    return this.ordersService.createOrder(
+      createOrderDto,
+      orderToUpdateTableDTO,
+    );
   }
 
   @Get('/')

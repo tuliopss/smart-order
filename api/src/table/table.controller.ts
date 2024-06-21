@@ -12,6 +12,7 @@ import {
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
+import { OrderToUpdateTableDTO } from 'src/orders/dto/order-to-update-table.dto';
 
 @Controller('table')
 export class TableController {
@@ -28,14 +29,18 @@ export class TableController {
     return await this.tableService.findAllTables();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tableService.findOne(+id);
+  @Get(':tableID')
+  async findTableByID(@Param('tableID') tableID: string) {
+    return await this.tableService.findTableByID(tableID);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTableDto: UpdateTableDto) {
-    return this.tableService.update(+id, updateTableDto);
+  @Patch(':tableID')
+  updateTableOrders(
+    @Param('tableID') id: number,
+    @Body() orderToUpdateTable: OrderToUpdateTableDTO,
+  ) {
+    console.log('controller', orderToUpdateTable);
+    return this.tableService.updateTableOrders(id, orderToUpdateTable);
   }
 
   @Delete(':id')

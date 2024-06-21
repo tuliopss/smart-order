@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { OrderToUpdateTableDTO } from './../orders/dto/order-to-update-table.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ITable } from './interfaces/table.interface';
+import { IOrder } from 'src/orders/interfaces/order.interface';
 
 @Injectable()
 export class TableService {
@@ -30,16 +36,46 @@ export class TableService {
     }
   }
 
-  async findAllTables() {
-    return await this.tableModel.find();
+  async findAllTables(): Promise<ITable[]> {
+    try {
+      const tables = await this.tableModel.find();
+
+      if (tables.length === 0) {
+        throw new NotFoundException('Não há mesas cadastradas...');
+      }
+
+      return tables;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} table`;
+  async findTableByID(tableID: string): Promise<ITable> {
+    const table = await this.tableModel
+      .findOne({ tableID: tableID })
+      .populate([{ path: 'orders', model: 'order' }]);
+    if (!table) {
+      throw new NotFoundException(`Mesa ${tableID} não encontrada`);
+    }
+
+    return table;
   }
 
-  update(id: number, updateTableDto: UpdateTableDto) {
-    return `This action updates a #${id} table`;
+  async updateTableOrders(
+    tableID: number,
+    orderToUpdateTable: OrderToUpdateTableDTO,
+  ) {
+    const table = await this.tableModel.findOne({ tableID: tableID });
+
+    if (!table) {
+      throw new NotFoundException(`Mesa ${tableID} não encontrada`);
+    }
+    table.orders.push(orderToUpdateTable.order);
+
+    return await this.tableModel.findOneAndUpdate(
+      { tableID: tableID },
+      { $set: table },
+    );
   }
 
   remove(id: number) {

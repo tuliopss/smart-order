@@ -10,5 +10,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   controllers: [TableController],
   providers: [TableService],
+  exports: [TableService],
 })
 export class TableModule {}

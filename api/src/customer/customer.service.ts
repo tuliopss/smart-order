@@ -19,6 +19,8 @@ export class CustomerService {
   async create(createCustomerDto: CreateCustomerDto): Promise<ICustomer> {
     try {
       const { tableID } = createCustomerDto;
+
+      const tableFound = await this;
       const customerCreated = new this.customerModel(createCustomerDto);
 
       return await customerCreated.save();

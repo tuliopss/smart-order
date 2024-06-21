@@ -7,7 +7,7 @@ export const OrderSchema = new mongoose.Schema(
     price: { type: Number },
     orderTime: { type: Date },
     status: { type: String },
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer' },
+    tableID: { type: String, ref: 'Table' }, // Alterado para Number
   },
   { timestamps: true, collection: 'orders' },
 );
