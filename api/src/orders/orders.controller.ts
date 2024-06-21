@@ -14,6 +14,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderToUpdateTableDTO } from './dto/order-to-update-table.dto';
 import { UpdateOrderStatusDTO } from './dto/update-orderStatus.dto';
+import { validationsParamsPipe } from 'src/common/pipes/validations-params-pipe.pipe';
 
 @Controller('/orders')
 export class OrdersController {
@@ -36,21 +37,21 @@ export class OrdersController {
   }
 
   @Get(':id')
-  async findOrderById(@Param('id') id: string) {
+  async findOrderById(@Param('id', validationsParamsPipe) id: string) {
     return await this.ordersService.findOrderById(id);
   }
 
   @Patch('status/:id')
   @UsePipes(ValidationPipe)
   async updateOrderStatus(
-    @Param('id') id: string,
+    @Param('id', validationsParamsPipe) id: string,
     @Body() updateOrderStatusDTO: UpdateOrderStatusDTO,
   ) {
     return this.ordersService.updateOrderStatus(id, updateOrderStatusDTO);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+  @Patch('/cancel/:id')
+  async cancelOrder(@Param('id') id: string) {
+    return this.ordersService.cancelOrder(id);
   }
 }

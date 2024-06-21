@@ -2,6 +2,7 @@ import { UpdateTableDto } from './../table/dto/update-table.dto';
 import {
   BadRequestException,
   Injectable,
+  MethodNotAllowedException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -96,7 +97,23 @@ export class OrdersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async cancelOrder(id: string) {
+    const order = await this.findOrderById(id);
+    const orderTime = new Date(order.orderTime);
+
+    const now = new Date();
+
+    const diference = now.getTime() - orderTime.getTime(); //miliseconds
+    const diferenceSeconds = diference / 1000;
+
+    if (diferenceSeconds > 60) {
+      throw new MethodNotAllowedException(
+        `Você não pode cancelar seu pedido porque já foi feito a mais de 1 minuto.`,
+      );
+    } else {
+      order.status = OrderStatus.CANCELED;
+      await order.save();
+      return { message: 'Pedido cancelado com sucesso' };
+    }
   }
 }
