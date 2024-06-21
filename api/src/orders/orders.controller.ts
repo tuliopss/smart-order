@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderToUpdateTableDTO } from './dto/order-to-update-table.dto';
+import { UpdateOrderStatusDTO } from './dto/update-orderStatus.dto';
 
 @Controller('/orders')
 export class OrdersController {
@@ -28,18 +31,22 @@ export class OrdersController {
   }
 
   @Get('/')
-  findAll() {
-    return this.ordersService.findAll();
+  async findAllOrders() {
+    return await this.ordersService.findAllOrders();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+  async findOrderById(@Param('id') id: string) {
+    return await this.ordersService.findOrderById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
+  @Patch('status/:id')
+  @UsePipes(ValidationPipe)
+  async updateOrderStatus(
+    @Param('id') id: string,
+    @Body() updateOrderStatusDTO: UpdateOrderStatusDTO,
+  ) {
+    return this.ordersService.updateOrderStatus(id, updateOrderStatusDTO);
   }
 
   @Delete(':id')

@@ -34,6 +34,11 @@ export class TableController {
     return await this.tableService.findTableByID(tableID);
   }
 
+  @Get('/orders/:tableID')
+  async getTableOrders(@Param('tableID') tableID: string) {
+    return await this.tableService.getTableOrders(tableID);
+  }
+
   @Patch(':tableID')
   updateTableOrders(
     @Param('tableID') id: number,

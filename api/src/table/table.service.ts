@@ -61,6 +61,12 @@ export class TableService {
     return table;
   }
 
+  async getTableOrders(tableID: string) {
+    const table = await this.findTableByID(tableID);
+
+    return table.orders;
+  }
+
   async updateTableOrders(
     tableID: number,
     orderToUpdateTable: OrderToUpdateTableDTO,
