@@ -13,7 +13,7 @@ async function bootstrap() {
       .tz('America/Sao_Paulo')
       .format('DD-MM-YYYY HH:mm:ss');
   };
-
+  app.enableCors();
   await app.listen(3000, () => console.log('App running'));
 }
 bootstrap();

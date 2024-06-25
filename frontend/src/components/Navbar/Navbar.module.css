@@ -1,0 +1,26 @@
+#nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f64e4;
+  border-bottom: 1px solid #363636;
+  padding: 0.1em 1em;
+}
+
+#nav_links {
+  display: flex;
+  align-items: center;
+}
+
+#nav_links li {
+  margin-right: 1em;
+  list-style: none;
+}
+
+#nav_links span {
+  cursor: pointer;
+}
+
+#nav_links svg {
+  font-size: 1.5em;
+}
