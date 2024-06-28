@@ -1,5 +1,5 @@
 .orderContainer {
   display: flex;
-  justify-content: flex-start;
-  /* flex-wrap: wrap; */
+  justify-content: center;
+  flex-wrap: wrap;
 }

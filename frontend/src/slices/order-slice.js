@@ -37,6 +37,24 @@ export const getOrderById = createAsyncThunk(
   }
 );
 
+export const updateOrderStatus = createAsyncThunk(
+  "order/status",
+  async (data, thunkAPI) => {
+    // const token = thunkAPI.getState().auth.user.token;
+
+    const resData = await orderService.updateOrderStatus(data._id, {
+      status: data.status,
+    });
+    console.log("slice", data);
+
+    if (data.error) {
+      return thunkAPI.rejectWithValue(data.error.message);
+    }
+
+    return resData;
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -69,6 +87,30 @@ const orderSlice = createSlice({
       .addCase(getOrderById.pending, (state) => {
         state.loading = true;
         state.error = false;
+      })
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+        state.order = action.payload;
+
+        state.orders.map((order) => {
+          if (order._id === action.payload._id) {
+            return { ...order, status: action.payload.status };
+          }
+
+          return order;
+        });
+        state.message = action.payload.message;
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.order = {};
       });
   },
 });

@@ -1,15 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./CardOrder.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "../../slices/order-slice";
+import { getOrderById, getOrders } from "../../slices/order-slice";
+import { Link } from "react-router-dom";
+import ModalCardOrder from "./ModalCardOrder";
+import Button from "react-bootstrap/esm/Button";
+import ModalOrder from "./ModalCardOrder";
 
-const CardOrder = ({ product, tableID, quantity, status }) => {
+const CardOrder = ({ id, product, tableID, quantity, status, price }) => {
   const dispatch = useDispatch();
-  const { orders } = useSelector((state) => state.order);
+  const { order } = useSelector((state) => state.order);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    dispatch(getOrders());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getOrderById(id));
+  // }, [dispatch]);
+
+  const toggleModal = (display) => {
+    setIsModalOpen(display);
+  };
 
   return (
     <div className={styles.cardItem}>
@@ -23,6 +32,9 @@ const CardOrder = ({ product, tableID, quantity, status }) => {
       <p>
         <span className={styles.bold}>Status: {status}</span>
       </p>
+
+      <button onClick={() => toggleModal(true)}>Ver detalhes</button>
+      <ModalOrder toggleModal={toggleModal} isOpen={isModalOpen} id={id} />
     </div>
   );
 };

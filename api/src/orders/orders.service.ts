@@ -36,7 +36,6 @@ export class OrdersService {
 
       newOrder.status = OrderStatus.RECEIVED;
       orderToUpdateTableDTO.order = newOrder;
-      console.log(newOrder);
 
       await this.tableService.updateTableOrders(
         table.tableID,
@@ -90,7 +89,7 @@ export class OrdersService {
       const status = updateOrderStatusDto.status;
 
       order.status = status;
-
+      console.log(order)
       return await this.orderModel.findByIdAndUpdate(id, order);
     } catch (error) {
       throw new BadRequestException(error.message);

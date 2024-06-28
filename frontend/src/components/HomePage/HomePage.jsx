@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getOrders } from "../../slices/order-slice";
 import { useEffect } from "react";
 import styles from "./HomePage.module.css";
+import ModalOrder from "../CardOrder/ModalCardOrder";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const HomePage = () => {
             tableID={order.tableID}
             quantity={order.quantity}
             status={order.status}
+            id={order._id}
           />
         ))}
     </div>

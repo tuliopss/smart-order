@@ -41,7 +41,7 @@ export class OrdersController {
     return await this.ordersService.findOrderById(id);
   }
 
-  @Patch('status/:id')
+  @Patch('/status/:id')
   @UsePipes(ValidationPipe)
   async updateOrderStatus(
     @Param('id', validationsParamsPipe) id: string,
