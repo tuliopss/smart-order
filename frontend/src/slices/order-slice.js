@@ -40,12 +40,9 @@ export const getOrderById = createAsyncThunk(
 export const updateOrderStatus = createAsyncThunk(
   "order/status",
   async (data, thunkAPI) => {
-    // const token = thunkAPI.getState().auth.user.token;
-
     const resData = await orderService.updateOrderStatus(data._id, {
       status: data.status,
     });
-    console.log("slice", data);
 
     if (data.error) {
       return thunkAPI.rejectWithValue(data.error.message);

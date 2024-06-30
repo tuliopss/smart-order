@@ -3,18 +3,25 @@ import styles from "./ModalCardOrder.module.css";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrderById, updateOrderStatus } from "../../slices/order-slice";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
+import useToastMessage from "../../hooks/useToastMessage";
+import ToastMessages from "../ToastMessages/ToastMessages";
 
 function ModalOrder({ toggleModal, isOpen, id }) {
-  const { order } = useSelector((state) => state.order);
+  const { order, success, loading, error, message } = useSelector(
+    (state) => state.order
+  );
+
   const dispatch = useDispatch();
+  const { notify } = useToastMessage();
 
   const totalPrice = order.quantity * order.price;
 
   useEffect(() => {
     if (isOpen && id) {
       dispatch(getOrderById(id));
-
-      // calcTotalPrice(order.price, order.quantity);
     }
   }, [isOpen, id, dispatch]);
 
@@ -39,12 +46,22 @@ function ModalOrder({ toggleModal, isOpen, id }) {
       ...order,
       status: changeStatusOrder(order.status),
     };
-    dispatch(updateOrderStatus(data));
-    console.log("DATA", data);
+
+    dispatch(updateOrderStatus(data)).then((result) => {
+      if (result.type === "order/status/fulfilled") {
+        notify("success", message);
+      } else {
+        notify("error", "Falha ao iniciar o pedido");
+      }
+    });
   };
 
   if (!isOpen) {
     return null;
+  }
+
+  if (loading) {
+    return <p>Carregando...</p>;
   }
 
   return (
@@ -64,18 +81,19 @@ function ModalOrder({ toggleModal, isOpen, id }) {
         <p>
           <span>Status: {order.status}</span>{" "}
           <span>
-            {order.status == "RECEIVED" ? (
-              <button
-                name='status'
-                className={styles.btnStartPrep}
-                onClick={handleUpdateStatusOrder}>
-                Iniciar Preparação
-              </button>
-            ) : (
-              <button className={styles.btnStartPrep}>Concluir pedido</button>
-            )}
+            <button
+              name='status'
+              className={styles.btnStartPrep}
+              onClick={handleUpdateStatusOrder}>
+              {order.status == "RECEIVED"
+                ? "Iniciar Preparação"
+                : "Concluir pedido"}
+            </button>
           </span>
         </p>
+        <div>
+          <ToastMessages />
+        </div>
         <button onClick={() => toggleModal(false)}>Fechar</button>
       </div>
     </div>
