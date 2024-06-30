@@ -89,8 +89,13 @@ export class OrdersService {
       const status = updateOrderStatusDto.status;
 
       order.status = status;
-      console.log(order)
-      return await this.orderModel.findByIdAndUpdate(id, order);
+      await this.orderModel.findByIdAndUpdate(id, order);
+      return {
+        message:
+          order.status == 'PENDING'
+            ? 'Pedido iniciado com sucesso'
+            : 'Pedido concluído',
+      };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
