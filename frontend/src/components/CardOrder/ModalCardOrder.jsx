@@ -17,6 +17,8 @@ function ModalOrder({ toggleModal, isOpen, id }) {
   const dispatch = useDispatch();
   const { notify } = useToastMessage();
 
+  const [orderStatus, setOrderStatus] = useState(order.status);
+
   const totalPrice = order.quantity * order.price;
 
   useEffect(() => {

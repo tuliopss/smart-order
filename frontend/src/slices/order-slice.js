@@ -19,7 +19,10 @@ export const getOrders = createAsyncThunk(
     // the underline says to redux that the first argument its unnecessary
 
     const data = await orderService.getOrders();
-
+    
+    if (data.error) {
+      return thunkAPI.rejectWithValue(data.error.message);
+    }
     return data;
   }
 );
