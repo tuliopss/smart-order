@@ -81,7 +81,7 @@ function ModalOrder({ toggleModal, isOpen, id }) {
         </p>
 
         <p>
-          <span>Status: {order.status}</span>{" "}
+          <span>Status: {orderStatus}</span>{" "}
           <span>
             <button
               name='status'
