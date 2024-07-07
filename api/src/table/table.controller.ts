@@ -14,7 +14,7 @@ import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { OrderToUpdateTableDTO } from 'src/orders/dto/order-to-update-table.dto';
 
-@Controller('table')
+@Controller('tables')
 export class TableController {
   constructor(private readonly tableService: TableService) {}
 

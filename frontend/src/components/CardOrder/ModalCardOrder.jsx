@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useToastMessage from "../../hooks/useToastMessage";
 import ToastMessages from "../ToastMessages/ToastMessages";
 
-function ModalOrder({ toggleModal, isOpen, id }) {
+const ModalOrder = ({ toggleModal, isOpen, id }) => {
   const { order, success, loading, error, message } = useSelector(
     (state) => state.order
   );
@@ -17,15 +17,35 @@ function ModalOrder({ toggleModal, isOpen, id }) {
   const dispatch = useDispatch();
   const { notify } = useToastMessage();
 
-  const [orderStatus, setOrderStatus] = useState(order.status);
+  const [orderState, setOrderState] = useState({});
 
-  const totalPrice = order.quantity * order.price;
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const fetchGetOrderById = (id) => {
+    dispatch(getOrderById(id));
+  };
+
+  const fillOrderState = (order) => {
+    setOrderState({
+      product: order.product,
+      quantity: order.quantity,
+      status: order.status,
+      price: order.price,
+    });
+  };
 
   useEffect(() => {
     if (isOpen && id) {
-      dispatch(getOrderById(id));
+      fetchGetOrderById(id);
     }
   }, [isOpen, id, dispatch]);
+
+  useEffect(() => {
+    if (order && order._id === id) {
+      fillOrderState(order);
+      setTotalPrice(order.quantity * order.price);
+    }
+  }, [id, order]);
 
   const changeStatusOrder = (status) => {
     let orderStatus;
@@ -38,26 +58,33 @@ function ModalOrder({ toggleModal, isOpen, id }) {
         break;
 
       default:
+        orderStatus = status;
         break;
     }
     return orderStatus;
   };
 
   const handleUpdateStatusOrder = () => {
+    const updatedStatus = changeStatusOrder(orderState.status);
+
     const data = {
       ...order,
-      status: changeStatusOrder(order.status),
+      status: updatedStatus,
     };
 
     dispatch(updateOrderStatus(data)).then((result) => {
-      if (result.type === "order/status/fulfilled") {
-        notify("success", message);
+      setOrderState((prevState) => ({
+        ...prevState,
+        status: updatedStatus,
+      }));
+
+      if (success) {
+        notify(success, message);
       } else {
-        notify("error", "Falha ao iniciar o pedido");
+        notify(error, message);
       }
     });
   };
-
   if (!isOpen) {
     return null;
   }
@@ -72,24 +99,29 @@ function ModalOrder({ toggleModal, isOpen, id }) {
 
       <div className={styles.modal}>
         <h2>Detalhes do Pedido</h2>
-        <h3>{order.product}</h3>
+        <h3>{orderState.product}</h3>
         <p>
-          <span>Quantidade: {order.quantity}</span>
+          <span>Quantidade: {orderState.quantity}</span>
         </p>
         <p>
           <span>Valor total: R${totalPrice}</span>
         </p>
 
         <p>
-          <span>Status: {orderStatus}</span>{" "}
+          <span>Status: {orderState.status}</span>
           <span>
             <button
               name='status'
               className={styles.btnStartPrep}
               onClick={handleUpdateStatusOrder}>
-              {order.status == "RECEIVED"
+              {/* {orderState.status == "RECEIVED"
                 ? "Iniciar Preparação"
-                : "Concluir pedido"}
+                : "Concluir pedido"} */}
+              {orderState.status == "RECEIVED"
+                ? "Iniciar Preparação"
+                : orderState.status == "PENDING"
+                ? "Concluir pedido"
+                : "Pedido já concluído"}
             </button>
           </span>
         </p>
@@ -100,6 +132,6 @@ function ModalOrder({ toggleModal, isOpen, id }) {
       </div>
     </div>
   );
-}
+};
 
 export default ModalOrder;

@@ -7,16 +7,21 @@ import ModalOrder from "../CardOrder/ModalCardOrder";
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { orders , error, message, loading} = useSelector((state) => state.order);
-  console.log(error)
-  
+  const { orders, order, error, message, loading } = useSelector(
+    (state) => state.order
+  );
+
   useEffect(() => {
     dispatch(getOrders());
-  }, [dispatch]);
+  }, [dispatch, order]);
+
+  if (loading) {
+    <p>Carregando...</p>;
+  }
 
   return (
     <div className={styles.orderContainer}>
-      {orders.length > 0 ?
+      {orders.length > 0 ? (
         orders.map((order) => (
           <CardOrder
             key={order._id}
@@ -26,8 +31,10 @@ const HomePage = () => {
             status={order.status}
             id={order._id}
           />
-        )) : (<h2>{error}</h2>
-        )}
+        ))
+      ) : (
+        <h2>{error}</h2>
+      )}
     </div>
   );
 };

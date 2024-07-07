@@ -19,7 +19,7 @@ export const getOrders = createAsyncThunk(
     // the underline says to redux that the first argument its unnecessary
 
     const data = await orderService.getOrders();
-    
+
     if (data.error) {
       return thunkAPI.rejectWithValue(data.error.message);
     }
@@ -76,6 +76,10 @@ const orderSlice = createSlice({
       .addCase(getOrders.pending, (state) => {
         state.loading = true;
         state.error = false;
+      })
+      .addCase(getOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
       .addCase(getOrderById.fulfilled, (state, action) => {
